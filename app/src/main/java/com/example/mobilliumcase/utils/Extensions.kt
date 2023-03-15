@@ -3,7 +3,6 @@ package com.example.mobilliumcase.utils
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -24,11 +23,18 @@ import retrofit2.Response
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.Target
+import java.text.SimpleDateFormat
+import java.util.*
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
 
 fun showToast(context: Context?, message: String) = Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+
+fun String.convertToFormattedDate(): String? {
+    val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(this)
+    return if(date != null) SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date) else this
+}
 
 fun View.setGone(){
     this.visibility = View.GONE

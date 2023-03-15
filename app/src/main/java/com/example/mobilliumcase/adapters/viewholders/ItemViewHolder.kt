@@ -5,10 +5,7 @@ import com.example.mobilliumcase.R
 import com.example.mobilliumcase.databinding.CellItemBinding
 import com.example.mobilliumcase.interfaces.Interaction
 import com.example.mobilliumcase.models.MovieModel
-import com.example.mobilliumcase.utils.Constants
-import com.example.mobilliumcase.utils.loadWithGlide
-import com.example.mobilliumcase.utils.setGone
-import com.example.mobilliumcase.utils.setVisible
+import com.example.mobilliumcase.utils.*
 
 class ItemViewHolder(
     private val binding: CellItemBinding,
@@ -28,7 +25,7 @@ class ItemViewHolder(
 
         binding.movieTitleTV.text = item.title
         binding.movieDescriptionTV.text = item.overview
-        binding.movieDateTV.text = item.releaseDate
+        binding.movieDateTV.text = item.releaseDate.convertToFormattedDate()
 
         binding.root.setOnClickListener {
             interaction.onItemSelected(item, position)

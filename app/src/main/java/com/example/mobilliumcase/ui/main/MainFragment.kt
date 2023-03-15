@@ -113,6 +113,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
     }
 
     private fun setObservers() {
+        binding.appbarLayout.setExpanded(viewModel.scrollPosition < 5)
+
         viewModel.nowPlayingMovies.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is NetworkResponse.Failure -> {

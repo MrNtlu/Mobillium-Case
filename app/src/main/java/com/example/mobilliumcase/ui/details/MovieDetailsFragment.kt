@@ -94,7 +94,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                             binding.movieDetailsCollapsingToolbar.setGone()
                         }
                         binding.rateTV.text = String.format("%.1f", voteAvg)
-                        binding.dateTV.text = releaseDate
+                        binding.dateTV.text = releaseDate.convertToFormattedDate()
                         binding.titleTV.text = title
                         binding.movieDetailsTV.text = overview
                     }
