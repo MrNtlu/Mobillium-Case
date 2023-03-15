@@ -91,7 +91,6 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
         } else {
             notifyItemRemoved(itemCount)
 
-            newList.addAll(0, arrayList)
             handleDiffUtil(newList)
         }
     }

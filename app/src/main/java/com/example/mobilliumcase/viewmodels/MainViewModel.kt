@@ -50,12 +50,25 @@ class MainViewModel @Inject constructor(
     }
 
     fun fetchUpcomingMovies() = viewModelScope.launch(Dispatchers.IO) {
+        val prevList = arrayListOf<MovieModel>()
+        if (_upcomingList.value is NetworkListResponse.Success) {
+            prevList.addAll((_upcomingList.value as NetworkListResponse.Success<List<MovieModel>>).data.toCollection(ArrayList()))
+        }
+
         repository.fetchUpcomingMovies(page).collect { response ->
             withContext(Dispatchers.Main) {
-                _upcomingList.value = response
-
                 if (response is NetworkListResponse.Success) {
+                    prevList.addAll(response.data)
+
+                    _upcomingList.value = NetworkListResponse.Success(
+                        prevList,
+                        isPaginationData = response.isPaginationData,
+                        isPaginationExhausted = response.isPaginationExhausted,
+                    )
+
                     setPagePosition(page.plus(1))
+                } else {
+                    _upcomingList.value = response
                 }
             }
         }

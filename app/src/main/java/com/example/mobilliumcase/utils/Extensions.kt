@@ -3,6 +3,7 @@ package com.example.mobilliumcase.utils
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -28,6 +29,8 @@ import java.util.*
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
+
+fun printLog(message: String, tag: String = "TestLog") = Log.d(tag,message)
 
 fun showToast(context: Context?, message: String) = Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
 

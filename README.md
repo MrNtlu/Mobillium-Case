@@ -11,6 +11,7 @@
 * Language: Kotlin
 * Software Architecture: MVVM
 * Dependency Injection: Dagger Hilt
+* Orientation Change & Process Death handled and App is Memory Leak free.
 
 ## 3rd Party Libraries:
 

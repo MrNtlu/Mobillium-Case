@@ -185,6 +185,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                         } else {
                             viewModel.didOrientationChange = false
                         }
+                    } else {
+                        binding.upcomingRV.scrollToPosition(viewModel.scrollPosition - 1)
                     }
                 }
             }
