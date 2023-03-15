@@ -3,7 +3,6 @@
 ## Table of Contents
 * **[Basic Info](#basic-info)**
 * **[3rd Party Libraries](#3rd-party-libraries)**
-* **[Personal Notes](#personal-notes)**
 
 ## Basic Info
 
@@ -20,5 +19,5 @@
 * Coroutines
 * Jetpack Navigation
 * Leak Canary (Memory Leak Detection)
-
-## Personal Notes
+* Shimmer
+* Lottie

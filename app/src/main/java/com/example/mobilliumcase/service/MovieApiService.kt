@@ -1,10 +1,10 @@
 package com.example.mobilliumcase.service
 
 import com.example.mobilliumcase.models.MovieDetailsModel
-import com.example.mobilliumcase.models.MovieModel
 import com.example.mobilliumcase.models.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieApiService {
@@ -18,8 +18,8 @@ interface MovieApiService {
 
     // Note: This could be separated but since we don't have a lot of endpoints
     // I've decided to put them into single file.
-    @GET("movie/")
+    @GET("movie/{movieID}")
     suspend fun getMovieDetails(
-        @Query("page") page: Int
+        @Path("movieID") movieID: Int,
     ): Response<MovieDetailsModel>
 }

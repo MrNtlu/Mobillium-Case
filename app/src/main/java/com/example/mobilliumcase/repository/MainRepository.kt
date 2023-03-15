@@ -2,15 +2,12 @@ package com.example.mobilliumcase.repository
 
 import com.example.mobilliumcase.models.MovieModel
 import com.example.mobilliumcase.service.MovieApiService
-import com.example.mobilliumcase.utils.Constants
 import com.example.mobilliumcase.utils.NetworkListResponse
-import com.example.mobilliumcase.utils.printLog
 import com.example.mobilliumcase.utils.requestFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
@@ -22,28 +19,24 @@ class MainRepository @Inject constructor(
 
         emit(NetworkListResponse.Loading(isPaginating))
 
-        withTimeoutOrNull(Constants.TIMEOUT_VALUE) {
-            try {
-                val response = movieApiService.getUpcomingMovies(page)
+        try {
+            val response = movieApiService.getUpcomingMovies(page)
 
-                if (response.isSuccessful && response.body() != null) {
-                    val responseBody = response.body()!!
-                    val isPaginationExhausted = page >= responseBody.totalPages
+            if (response.isSuccessful && response.body() != null) {
+                val responseBody = response.body()!!
+                val isPaginationExhausted = page >= responseBody.totalPages
 
-                    printLog("Is Pagination exhausted $page ${responseBody.totalPages}")
-
-                    emit(NetworkListResponse.Success(
-                        responseBody.results,
-                        isPaginationData = isPaginating,
-                        isPaginationExhausted = isPaginationExhausted,
-                    ))
-                } else {
-                    emit(handlePaginationError<MovieModel>(isPaginating, response.message()))
-                }
-            } catch (e: Exception) {
-                emit(handlePaginationError<MovieModel>(isPaginating, e.message ?: e.toString()))
+                emit(NetworkListResponse.Success(
+                    responseBody.results,
+                    isPaginationData = isPaginating,
+                    isPaginationExhausted = isPaginationExhausted,
+                ))
+            } else {
+                emit(handlePaginationError<MovieModel>(isPaginating, response.message()))
             }
-        } ?: emit(NetworkListResponse.Failure("Timeout! Please try again."))
+        } catch (e: Exception) {
+            emit(handlePaginationError<MovieModel>(isPaginating, e.message ?: e.toString()))
+        }
     }.flowOn(Dispatchers.IO)
 
     fun fetchNowPlayingMovies() = requestFlow {

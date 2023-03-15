@@ -5,20 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
-import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
+import com.denzcoskun.imageslider.models.SlideModel
+import com.example.mobilliumcase.R
 import com.example.mobilliumcase.adapters.UpcomingMovieAdapter
 import com.example.mobilliumcase.databinding.FragmentMainBinding
 import com.example.mobilliumcase.interfaces.Interaction
 import com.example.mobilliumcase.models.MovieModel
 import com.example.mobilliumcase.ui.BaseFragment
-import com.example.mobilliumcase.utils.NetworkListResponse
-import com.example.mobilliumcase.utils.printLog
-import com.example.mobilliumcase.utils.quickScrollToTop
+import com.example.mobilliumcase.utils.*
 import com.example.mobilliumcase.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
 class MainFragment : BaseFragment<FragmentMainBinding>() {
 
     private val viewModel: MainViewModel by viewModels()
-    private var movieAdapter: UpcomingMovieAdapter? = null // Change to lazy if no memory leak
+    private var movieAdapter: UpcomingMovieAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +67,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
             addItemDecoration(DividerItemDecoration(context, linearLayoutManager.orientation))
             movieAdapter = UpcomingMovieAdapter(object: Interaction<MovieModel> {
                 override fun onItemSelected(item: MovieModel, position: Int) {
-                    Toast.makeText(context, "Item $position ${item.id}", Toast.LENGTH_SHORT).show()
+                    navigateToDetails(item.id)
                 }
 
                 override fun onErrorRefreshPressed() {
@@ -111,6 +113,47 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
     }
 
     private fun setObservers() {
+        viewModel.nowPlayingMovies.observe(viewLifecycleOwner) { response ->
+            when(response) {
+                is NetworkResponse.Failure -> {
+                    binding.imageSlider.setGone()
+                    binding.errorInc.root.setVisible()
+                    binding.loadingInc.root.setGone()
+
+                    binding.errorInc.apply {
+                        animationView.setGone()
+                        errorText.text = response.errorMessage
+                        refreshButton.setOnClickListener {
+                            viewModel.fetchNowPlayingMovies()
+                        }
+                    }
+                }
+                NetworkResponse.Loading -> {
+                    binding.imageSlider.setGone()
+                    binding.errorInc.root.setGone()
+                    binding.loadingInc.root.setVisible()
+                }
+                is NetworkResponse.Success -> {
+                    binding.imageSlider.setVisible()
+                    binding.errorInc.root.setGone()
+                    binding.loadingInc.root.setGone()
+
+                    val validMovies = response.data.results.filter { it.backdropPath != null }
+
+                    val sliderIDList = validMovies.map { it.id }
+                    val imageSliderList = validMovies.map { SlideModel(Constants.TMDB_IMAGE_URL.plus(it.backdropPath), it.title, ScaleTypes.CENTER_CROP) }
+                    binding.imageSlider.setImageList(imageSliderList)
+
+                    // Has to be called here otherwise doesn't work.
+                    binding.imageSlider.setItemClickListener(object: ItemClickListener {
+                        override fun onItemSelected(position: Int) {
+                            navigateToDetails(sliderIDList[position])
+                        }
+                    })
+                }
+            }
+        }
+
         viewModel.upcomingMovies.observe(viewLifecycleOwner) { response ->
             binding.swipeRefreshLayout.isEnabled = when (response) {
                 is NetworkListResponse.Success -> {
@@ -124,7 +167,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
 
             when(response) {
                 is NetworkListResponse.Failure -> {
-                    printLog(response.errorMessage)
                     movieAdapter?.setErrorView(response.errorMessage)
                 }
                 is NetworkListResponse.Loading -> {
@@ -145,5 +187,17 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                 }
             }
         }
+    }
+
+    private fun navigateToDetails(id: Int) {
+        val bundle = bundleOf(
+            "id" to id
+        )
+        navController.navigate(R.id.action_mainFragment_to_movieDetailsFragment, bundle)
+    }
+
+    override fun onDestroyView() {
+        movieAdapter = null
+        super.onDestroyView()
     }
 }

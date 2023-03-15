@@ -2,4 +2,8 @@
     <string name="app_name">MobilliumCase</string>
     <string name="select_movie_cd">Select Movie</string>
     <string name="movie_image_cd">Movie Image</string>
+    <string name="loading_">Loading…</string>
+    <string name="rate">/10</string>
+    <string name="bullet_point">•</string>
+    <string name="refresh_cd">Refresh</string>
 </resources>

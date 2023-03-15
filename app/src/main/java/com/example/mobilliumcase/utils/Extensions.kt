@@ -1,11 +1,13 @@
 package com.example.mobilliumcase.utils
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -18,18 +20,15 @@ import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.Response
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.Target
-import java.util.*
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
 
-fun printLog(message:String, tag: String = "Test")= Log.d(tag,message)
+fun showToast(context: Context?, message: String) = Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
 
 fun View.setGone(){
     this.visibility = View.GONE
@@ -56,21 +55,19 @@ fun ImageView.loadWithGlide(imageUrl:String, progressBar: ProgressBar) =
 fun<T> requestFlow(call: suspend () -> Response<T>): Flow<NetworkResponse<T>> = flow {
     emit(NetworkResponse.Loading)
 
-    withTimeoutOrNull(Constants.TIMEOUT_VALUE) {
-        try {
-            val response = call()
+    try {
+        val response = call()
 
-            if (response.isSuccessful) {
-                response.body()?.let { data ->
-                    emit(NetworkResponse.Success(data))
-                }
-            } else {
-                emit(NetworkResponse.Failure(errorMessage = response.message()))
+        if (response.isSuccessful) {
+            response.body()?.let { data ->
+                emit(NetworkResponse.Success(data))
             }
-        } catch (e: Exception) {
-            emit(NetworkResponse.Failure(e.message ?: e.toString()))
+        } else {
+            emit(NetworkResponse.Failure(errorMessage = response.message()))
         }
-    } ?: emit(NetworkResponse.Failure("Timeout! Please try again."))
+    } catch (e: Exception) {
+        emit(NetworkResponse.Failure(e.message ?: e.toString()))
+    }
 }.flowOn(Dispatchers.IO)
 
 // Credits: https://medium.com/flat-pack-tech/quickly-scroll-to-the-top-of-a-recyclerview-da15b717f3c4

@@ -1,6 +1,6 @@
 package com.example.mobilliumcase.di
 
-import com.example.mobilliumcase.repository.DetailsRepository
+import com.example.mobilliumcase.repository.MovieDetailsRepository
 import com.example.mobilliumcase.repository.MainRepository
 import com.example.mobilliumcase.service.MovieApiService
 import dagger.Module
@@ -16,5 +16,5 @@ class HiltModule {
     fun provideMainRepository(movieApiService: MovieApiService) = MainRepository(movieApiService)
 
     @Provides
-    fun provideDetailsRepository(movieApiService: MovieApiService) = DetailsRepository(movieApiService)
+    fun provideDetailsRepository(movieApiService: MovieApiService) = MovieDetailsRepository(movieApiService)
 }
