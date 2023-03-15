@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/movieDetailsCollapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="256dp"
             app:layout_scrollFlags="scroll">
@@ -146,11 +147,14 @@
                 android:fontFamily="@font/roboto"
                 android:textColor="@color/black"
                 android:textSize="16sp"
+                android:lineSpacingExtra="0.25dp"
+                android:lineHeight="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titleTV"
-                tools:text="TextView" />
+                tools:text="TextView\nline test\ntest again"
+                tools:targetApi="p" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

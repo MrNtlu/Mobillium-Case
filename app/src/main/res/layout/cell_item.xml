@@ -50,6 +50,8 @@
         android:ellipsize="end"
         android:textColor="@color/text_gray"
         android:textSize="13sp"
+        android:lineHeight="18dp"
+        android:lineSpacingExtra="0.1dp"
         app:layout_constraintEnd_toEndOf="@+id/movieTitleTV"
         app:layout_constraintStart_toEndOf="@+id/movieImage"
         app:layout_constraintTop_toBottomOf="@+id/movieTitleTV" />

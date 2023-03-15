@@ -23,5 +23,5 @@ data class MovieDetailsModel(
     @SerializedName("vote_count")
     val voteCount: Int,
     @SerializedName("backdrop_path")
-    val backdropPath: String,
+    val backdropPath: String?,
 )

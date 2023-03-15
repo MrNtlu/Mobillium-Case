@@ -84,10 +84,15 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                     response.data.apply {
                         this@MovieDetailsFragment.imdbID = imdbID
 
-                        binding.movieDetailsImage.loadWithGlide(
-                            Constants.TMDB_IMAGE_URL.plus(backdropPath),
-                            binding.movieDetailsProgressbar
-                        )
+                        if (backdropPath != null) {
+                            binding.movieDetailsCollapsingToolbar.setVisible()
+                            binding.movieDetailsImage.loadWithGlide(
+                                Constants.TMDB_IMAGE_URL.plus(backdropPath),
+                                binding.movieDetailsProgressbar
+                            )
+                        } else {
+                            binding.movieDetailsCollapsingToolbar.setGone()
+                        }
                         binding.rateTV.text = String.format("%.1f", voteAvg)
                         binding.dateTV.text = releaseDate
                         binding.titleTV.text = title
