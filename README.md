@@ -38,7 +38,7 @@ https://user-images.githubusercontent.com/25686023/225452694-4e94df3a-719b-48d6-
 ## Notes
 
 - `utils/Constants.kt` file is hidden. It'll be provided externally.
-- To test process death you can use this function,
+- To test process death you can use this command line,
 
     ```shell
     adb shell am kill com.example.mobilliumcase
